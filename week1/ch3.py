@@ -36,9 +36,9 @@ def factorial(n):
 print(factorial(5))
 
 # 4. import function
-import example
+import ch3_example
 
-example.greet("Elicia")
+ch3_example.greet("Elicia")
 
 # module import에도 여러 가지 방법이 있다.
 

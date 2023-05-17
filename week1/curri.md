@@ -39,4 +39,5 @@ goal : python의 syntax와 style에 익숙해지고, 파이썬을 이용해 문�
 # Day 5: File I/O
 
 - Basics of file I/O: opening, reading, writing, and closing files
+- Context Managers
 - Working with different file formats (.txt, .csv, .json)

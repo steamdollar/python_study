@@ -6,4 +6,4 @@ def greet(name):
     # template 
     print(f"Hello, {name}!")
 
-# 이걸 day3.py로 가져간다.
+# 이걸 ch3.py로 가져간다.
