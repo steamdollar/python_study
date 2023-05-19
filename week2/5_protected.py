@@ -3,8 +3,8 @@ class Animal:
         self._name = name
         self.__age = age
         
-        def get_age(self):
-            return self.__age
+    def get_age(self):
+        return self.__age
             
 
 # protected member 에 접근하는 것은 가능
@@ -27,4 +27,4 @@ except AttributeError:
     print("cannot modify private member : __age")
 
 
-# print(dog.get_age())
+print(dog.get_age())

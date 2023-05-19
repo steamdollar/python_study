@@ -1,8 +1,10 @@
+#
 # 1. UnderStanding OOP
 
 # OOP는 프로그래밍 패러다임으로, 프로그램을 구조화해 하나의 객체에 property와 behavior가 묶여있는 것을 의미한다.
 # 코드 유지 관리가 쉬워짐.
 
+#
 # 2. classes and obj in python
 # 파이썬에선 모든게 객체다. type() 을 사용해 객체의 타입을 확인할 수 있다.
 
@@ -19,11 +21,15 @@ class Dog:
 # Dog type instance(object) my_dog 생성
 my_dog = Dog("Fido")
 
+# type() 으로 class 확인 가능
+print(type(my_dog))
+
 # attribute, method에 접근 가능
 print(my_dog.name)
 my_dog.bark()
 
-# 3. class variable and instance variable
+#
+# 3. class variable & instance variable
 # 파이썬엔 두 가지 변수가 있다.
 
 # class variable : class의 모든 인스턴스에게 공유되는 변수, 이를 바꾸면 모든 인스턴스의 해당 값이 변한다.
@@ -44,6 +50,7 @@ Dog.species = "Canis lupus"
 print(dog1.species)
 print(dog2.species)
 
+#
 # 4. instance methods
 # method는 class 내부에 정의된 함수로, 그 class의 인스턴스에만 호출될 수 있다.
 # mtehod의 첫 파라미터는 항상 `self`이며, class의 인스턴스를 향한 reference가 된다.
@@ -56,6 +63,7 @@ Dog.bark = bark
 
 dog1.bark()
 
+#
 # 5. self
 # `self` keyword는 class의 instance method에 첫 번쨰 인수로 사용되는 convention이다.
 # 이는 method가 호출되는 instance를 refer 한다.
