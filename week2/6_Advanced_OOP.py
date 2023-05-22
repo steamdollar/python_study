@@ -23,7 +23,7 @@ MyClass.update_var(99)
 print(MyClass.var) # 99
 
 #
-# 1-2. staticmethod
+# 1-2. static method
 # 이건 instance, class에 작동하는 method가 아닌, 특정 파라미터를 처리해주는 함수.
 
 class MyClass2:
