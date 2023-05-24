@@ -49,3 +49,38 @@ def hello2():
     print("hello2")
     
 hello2()
+
+## 4. class decorators
+# func가 아닌 class를 수정, 확장한다.
+
+# class를 인수로 받아 property을 추가하는 decorator
+def my_class_decorator(cls):
+    cls.greeting = "hello"
+    return cls
+    
+@my_class_decorator
+class MyClass:
+    pass
+    
+obj = MyClass()
+print(obj.greeting)
+
+#
+# 5. decorators w/ parameters
+# decorator도 인수를 받을 수 있다.
+
+# repeat : n을 인수로 갖는 데코레이터 > 함수 실행의 반복 횟수 결정
+def repeat(n):
+    # repeat은 decorator를 리턴, decorator는 wrapper를 리턴
+    def decorator(func):
+        def wrapper(*args):
+            for _ in range(n):
+                func(*args)
+        return wrapper
+    return decorator
+    
+@repeat(3)
+def say_hello2(name):
+    print(f"hello {name}")
+
+say_hello2("Alice")

@@ -1,3 +1,4 @@
+# Functional programming
 
 # Day 1: Introduction to Functional Programming
 - Understanding the Functional Programming Paradigm
@@ -23,5 +24,18 @@
 
 # Day 5: Introduction to Generators
 - Understanding Generators and the yield keyword
+    - concept of generators
+    - Advantages of using generators
+    - intro to `yield` keyword
+
 - Writing Generators
+    - creating a simple generator function
+    - working w/ generator's `next` function
+    - Understanding `StopIteration`
+
 - Generator Expressions
+    - Creating generator expressions
+    - Comparing list comprehensions & generator expressions
+    - Using generator expressions for large data processing
+
+
