@@ -53,3 +53,4 @@ print("All Done!")
 # (GIL의 제약을 넘어 다른 cpu에서 동시에 돌아갈 수 있으므로)
 # I/O bound task (e.g. downloading file from internet)에서는
 # I/O operation이 완료되길 기다리는 동안 동시에 실행이 가능한 멀티 스레딩이 좋을 수 있다.
+
