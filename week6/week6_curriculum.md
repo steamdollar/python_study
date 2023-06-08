@@ -2,28 +2,60 @@
 
 # Week 9 Detailed Curriculum:
 
-## Day 1: Introduction to Scikit-Learn and Supervised Learning
-- Understanding Machine Learning
-- Introduction to Scikit-Learn
-- Supervised vs Unsupervised Learning
+## Day 1: Understanding Machine Learning and Scikit-Learn
+1. Understanding Machine Learning
+    - Theory and concept
+2. Introduction to Scikit-Learn
+    - Installation
+    - Core functionalities
+    
+## Day 2: Introduction to Supervised Learning
+1. Understanding Supervised Learning
+    - Theory and concept
+    - Common Algorithms
 
-## Day 2: Linear and Logistic Regression
-- What is Regression?
-- Understanding Linear Regression
-- Understanding Logistic Regression
+## Day 3: Linear and Logistic Regression
+1. Understanding Linear Regression
+    - Theory and mathematical background
+    - Code example with Scikit-Learn
 
-## Day 3: Decision Trees and Support Vector Machines (SVMs)
-- What are Decision Trees?
-- Understanding SVMs
+2. Understanding Logistic Regression
+    - Theory and concept
+    - Code example with Scikit-Learn
 
-## Day 4: Introduction to Unsupervised Learning
-- Understanding K-means Clustering
-- Hierarchical Clustering
+## Day 4: Decision Trees and Support Vector Machines (SVMs)
+1. What are Decision Trees?
+    - Theory and concept
+    - Code example with Scikit-Learn
 
-## Day 5: Model Evaluation
-- Understanding the Confusion Matrix
-- ROC Curve
-- Cross-validation
+2. Understanding SVMs
+    - Theory and mathematical background
+    - Code example with Scikit-Learn
+
+## Day 5: Introduction to Unsupervised Learning
+1. Understanding Unsupervised Learning
+    - Theory and concept
+    - Common Algorithms
+
+## Day 6: K-means Clustering and Hierarchical Clustering
+1. Understanding K-means Clustering
+    - Theory and concept
+    - Code example with Scikit-Learn
+
+2. Understanding Hierarchical Clustering
+    - Theory and mathematical background
+    - Code example with Scikit-Learn
+
+## Day 7: Model Evaluation
+1. Understanding the Confusion Matrix
+    - What is it?
+    - How to interpret it?
+2. ROC Curve
+    - What is it?
+    - How to interpret it?
+3. Cross-validation
+    - What is it?
+    - Why and when to use it?
 
 # Week 10 Detailed Curriculum:
 ## Day 1: Understanding Overfitting and Underfitting
