@@ -36,7 +36,7 @@
 1. Understanding Unsupervised Learning
     - Theory and concept
     - Common Algorithms
-
+ 
 ## Day 6: K-means Clustering and Hierarchical Clustering
 1. Understanding K-means Clustering
     - Theory and concept
