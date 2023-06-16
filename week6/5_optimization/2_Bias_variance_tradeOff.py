@@ -45,4 +45,4 @@ plt.xlabel('Degree')
 plt.ylabel('Mean Squared Error')
 plt.savefig('tradeOff.png')
 
-# 잘 모르겠음..
+# 좀 어려움..
