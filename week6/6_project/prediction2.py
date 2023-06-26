@@ -4,118 +4,99 @@ from keras.models import load_model
 import pandas as pd
 import datetime
 import os
+import sys
 import math
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
+from build_model import build_model
+from data_download import download_data, save_data
+from plot_graph import plot_graph
+from datetime import datetime, timedelta
+from test_data import test_data
 
-model = load_model("saved_model.h5")
+# ticker, 기간 지정
+ticker_symbol = "AAPL"
+start_date = '2010-01-01'
+end_date = '2023-06-21'
+file_name = "AAPL.csv"
 
-file_name="AAPL.csv"
-df = pd.read_csv(file_name, index_col=0, parse_dates=True)
+# 이미 데이터가 있는 경우 데이터 다운로드를 실행하지 않음
+if not os.path.exists(file_name):
+    df = download_data(ticker_symbol, start_date, end_date)
+    save_data(df, file_name)
 
-data = df.filter(['Open', "High", 'Low', 'Close'])
-dataset = data.values
+df = pd.read_csv('AAPL.csv', index_col=0, parse_dates=True)
+
+# 필요 column 선별
+dataset = df.filter(['Open', "High", 'Low', 'Close']).values
+
+# data period specify
 training_data_len = math.ceil(len(dataset) * 0.8)
+
+# normalize
 scaler = MinMaxScaler(feature_range=(0,1))
 scaled_data = scaler.fit_transform(dataset)
 
-# create training dataset
+#
+# training
 train_data = scaled_data[0:training_data_len, :]
 x_train, y_train = [], []
+
 for i in range(60, len(train_data)):
     x_train.append(train_data[i-60:i, :])
     # predicting the closing price
-    y_train.append(train_data[i, 3])
+    y_train.append(train_data[i, :])
     
 x_train, y_train = np.array(x_train), np.array(y_train)
 
 model_path= 'saved_model2.h5'
+model = build_model(model_path, x_train, y_train)
 
-if not os.path.exists(model_path):
-    model = Sequential()
-    model.add(LSTM(128, return_sequences=True, input_shape= (x_train.shape[1], 4)))
-    model.add(LSTM(64, return_sequences=False))
-    model.add(Dense(25))
-    model.add(Dense(1)) 
+# test
+rmse = test_data(model, dataset)
 
-    model.compile(optimizer='adam', loss='mean_squared_error')
-    model.fit(x_train, y_train, batch_size=1, epochs=10)
-    model.save(model_path)
-else:
-    model = load_model(model_path)
+# # Plot the data
+# train = df[:training_data_len]
+# valid = df[training_data_len:].copy()
+# valid['Predictions'] = predictions
+# plot_graph(train['Close'], 'Model', 'Date', 'Close Price USD ($)', "pred2.png", ['Train', 'Val', 'Predictions'])
 
-# ...assuming you have completed the model training code above...
-
-# Create a new dataset for testing
-test_data = scaled_data[training_data_len - 60:, :]
-x_test, y_test = [], dataset[training_data_len:, 3]
-for i in range(60, len(test_data)):
-    x_test.append(test_data[i-60:i, :])
-
-# Convert the data to a numpy array
-x_test = np.array(x_test)
-
-# Get the models predicted price values
-predictions = model.predict(x_test)
-
-# We have scaled the predictions between 0 and 1, we now need to inverse the scaling
-predictions = np.c_[np.zeros((len(predictions), 3)), predictions]
-predictions = scaler.inverse_transform(predictions)[:, 3]
-
-# Calculate the RMSE to check accuracy of predictions
-rmse = np.sqrt(np.mean(predictions - y_test) ** 2)
-
-print("Root Mean Squared Error:", rmse)
-
-# Plot the data
-train = data[:training_data_len]
-valid = data[training_data_len:].copy()
-valid['Predictions'] = predictions
-
-plt.figure(figsize=(16, 8))
-plt.title('Model')
-plt.xlabel('Date', fontsize=18)
-plt.ylabel('Close Price USD ($)', fontsize=18)
-plt.plot(train['Close'])
-plt.plot(valid[['Close', 'Predictions']])
-plt.legend(['Train', 'Val', 'Predictions'], loc='lower right')
-plt.savefig("pred2.png")
-
-
-#
+# practical prediction
 future_days = 180  # for predicting stock prices for the next 180 days
 
 # Take the last 60 days of data and transform it to the correct shape
 last_60_days = scaled_data[-60:]
-new_input = np.array([last_60_days])
+
+# .reshape(batch_size, time_steps, # of input_features)
+# 인수들이 input 삼중배열의 형태를 결정
+new_input = last_60_days.reshape(1, 60, 4)
 
 future_predictions = []
 
 # Predict future stock prices day by day
 for i in range(future_days):
+    # predict method는 각 시퀀스의 예측값을 리턴
     prediction = model.predict(new_input)
-    future_predictions.append(prediction[0, 0])
     
-    new_prediction = prediction[:, 0:1]
-    new_input = np.append(new_input[:, 1:, :], new_prediction.reshape(1, 1, 1), axis=1)
+    future_predictions.append(prediction[0])
+    
+    new_prediction = np.zeros((1,1,4))
+    new_prediction[0, 0, 3] = prediction[0, 0]
+     
+    new_input = np.append(new_input[:, 1:, :], new_prediction, axis=1)
 
 # Inverse scaling the predictions
 future_predictions = np.c_[np.zeros((len(future_predictions), 3)), future_predictions]
 future_predictions = scaler.inverse_transform(future_predictions)[:, 3]
 
 # Generating future dates
-from datetime import datetime, timedelta
-last_date = datetime.strptime(df.index[-1], '%Y-%m-%d')
-future_dates = [last_date + timedelta(days=x) for x in range(1, future_days + 1)]
+
+last_date = datetime.strptime(str(df.index[-1]), '%Y-%m-%d')
+future_days = (datetime.datetime.strptime("2023-12-31", "%Y-%m-%d") - datetime.datetime.strptime("2023-06-21", "%Y-%m-%d")).days
 
 # Plot the predictions
-plt.figure(figsize=(16, 8))
-plt.title('AAPL Stock Price Prediction')
-plt.xlabel('Date', fontsize=18)
-plt.ylabel('Close Price USD ($)', fontsize=18)
-plt.plot(df['Close'], label='Historical Data')
-plt.plot(future_dates, future_predictions, label='Future Predictions')
-plt.legend(loc='lower right')
-plt.show()
+
+plot_graph(pd.concat([df['Close'], pd.Series(future_predictions, index=future_dates)]), 'AAPL Stock Price Prediction',
+           'Date', 'Close Price USD ($)', 'pred3.png', ['Historical Data', 'Future Predictions'])
