@@ -6,15 +6,18 @@ import datetime
 import os
 import sys
 import math
+from datetime import datetime, timedelta
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
+import mplfinance as mpf
+
 from build_model import build_model
 from data_download import download_data, save_data
 from plot_graph import plot_graph
-from datetime import datetime, timedelta
 from test_data import test_data
+
 
 # ticker, 기간 지정
 ticker_symbol = "AAPL"
@@ -30,7 +33,7 @@ if not os.path.exists(file_name):
 df = pd.read_csv('AAPL.csv', index_col=0, parse_dates=True)
 
 # 필요 column 선별
-dataset = df.filter(['Open', "High", 'Low', 'Close']).values
+dataset = df.filter(['Open', 'High', 'Low', 'Close']).values
 
 # data period specify
 training_data_len = math.ceil(len(dataset) * 0.8)
@@ -82,21 +85,33 @@ for i in range(future_days):
     
     future_predictions.append(prediction[0])
     
-    new_prediction = np.zeros((1,1,4))
-    new_prediction[0, 0, 3] = prediction[0, 0]
+    new_prediction = prediction.reshape(1,1,4)
      
     new_input = np.append(new_input[:, 1:, :], new_prediction, axis=1)
 
 # Inverse scaling the predictions
-future_predictions = np.c_[np.zeros((len(future_predictions), 3)), future_predictions]
-future_predictions = scaler.inverse_transform(future_predictions)[:, 3]
+future_predictions = np.array(future_predictions)
+future_predictions = scaler.inverse_transform(future_predictions)
 
 # Generating future dates
 
-last_date = datetime.strptime(str(df.index[-1]), '%Y-%m-%d')
-future_days = (datetime.datetime.strptime("2023-12-31", "%Y-%m-%d") - datetime.datetime.strptime("2023-06-21", "%Y-%m-%d")).days
+last_date = df.index[-1].date()
+future_days = (datetime.strptime("2023-12-25", "%Y-%m-%d").date() - datetime.strptime("2023-06-28", "%Y-%m-%d").date()).days
+
+future_dates = pd.date_range(start=last_date + timedelta(days=1), periods=future_days)
 
 # Plot the predictions
+historical_data = df.filter(['Open', 'High', 'Low', 'Close'])
+future_predictions_df = pd.DataFrame(future_predictions, columns=['Open', 'High', 'Low', 'Close'], index=future_dates)
+combined_data = pd.concat([historical_data, future_predictions_df])
 
-plot_graph(pd.concat([df['Close'], pd.Series(future_predictions, index=future_dates)]), 'AAPL Stock Price Prediction',
-           'Date', 'Close Price USD ($)', 'pred3.png', ['Historical Data', 'Future Predictions'])
+# Convert the index to timezone-aware DatetimeIndex
+combined_data.index = pd.DatetimeIndex(pd.to_datetime(combined_data.index, utc=True))
+
+# Convert the index to timezone-unaware DatetimeIndex
+combined_data.index = combined_data.index.tz_localize(None)
+
+# Plot candlestick chart
+mpf.plot(combined_data, type='candle', style='yahoo', volume=False, 
+         title='Stock Price Candlestick Chart', figratio=(12,6),
+         savefig=dict(fname='candlestick_chart.png', dpi=100, bbox_inches='tight'))

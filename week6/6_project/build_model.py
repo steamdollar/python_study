@@ -26,6 +26,8 @@ def build_model(model_path, x_train, y_train):
         # Dense()
         # 이전 레이어의 모든 뉴런으로부터 각 뉴런이 입력을 받는다.
         model.add(Dense(25))
+        
+        # output은 4개의 뉴런을 가져야 함.
         model.add(Dense(4)) 
         
         # .compile()
