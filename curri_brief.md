@@ -23,6 +23,8 @@
 - Working with regular expressions
 - Multithreading and Multiprocessing
 
+# Week 6.5 : NLP
+- 문서 참조
 
 # Week 7-8: Python Libraries for Data Science
 
